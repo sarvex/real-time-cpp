@@ -37,7 +37,7 @@ class qemu_emulator:
 
     # Excute gdb commands
     def execute(self, command, from_tty = False, to_string = False):
-        gdb.execute('{}'.format(command), from_tty, to_string)
+        gdb.execute(f'{command}', from_tty, to_string)
 
     # Create log file
     def create_log_file(self):
@@ -46,7 +46,7 @@ class qemu_emulator:
 
     # Connect to server
     def connect_to_server(self, tcp_port):
-        self.execute('target remote localhost:{}'.format(tcp_port))
+        self.execute(f'target remote localhost:{tcp_port}')
         self.execute('monitor reset')
         self.execute('set confirm off')
 
@@ -63,8 +63,7 @@ class qemu_emulator:
 
     # Set gdb Bp
     def set_gdb_break_point(self):
-        my_bp = gdb.Breakpoint('app_benchmark_get_standalone_result')
-        return my_bp
+        return gdb.Breakpoint('app_benchmark_get_standalone_result')
 
     # Delete gdb Bp
     def delete_gdb_break_point(self, bp):
@@ -72,21 +71,16 @@ class qemu_emulator:
 
     # Get gdb result
     def get_gdb_result(self):
-       my_result = gdb.parse_and_eval("app_benchmark_standalone_result")
-       return my_result
+        return gdb.parse_and_eval("app_benchmark_standalone_result")
 
     # Convert from gdb type to hex
     def convert_to_hex(self, gdb_value):
         val_as_str = str(gdb_value)
-        val_as_hex = hex(int(val_as_str))
-        return val_as_hex
+        return hex(int(val_as_str))
 
     # Check the gdb return value
     def check_gdb_result(self, result_as_hex):
-       if result_as_hex == "0xf00dcafe":
-          return True
-       else:
-          return False
+        return result_as_hex == "0xf00dcafe"
 
 #-------------------------------------------------------------------------------
 # --- GDB Script starts here
@@ -120,7 +114,7 @@ obj.delete_gdb_break_point(bp1)
 value_as_hex = obj.convert_to_hex(my_value)
 
 # Print the return value
-print("Result value as hex: " + value_as_hex)
+print(f"Result value as hex: {value_as_hex}")
 
 # Check the gdb result and quit
 result_is_ok = obj.check_gdb_result(value_as_hex)
